@@ -1,0 +1,4 @@
+.idea
+.env
+db_filler.py
+db.sqlite3

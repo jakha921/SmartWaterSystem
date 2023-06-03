@@ -1,0 +1,155 @@
+{% extends 'app/base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+    <!-- Menu -->
+    {% block aside %}
+        {% include 'app/aside.html' %}
+    {% endblock %}
+    <!-- / Menu -->
+
+    <!-- Layout container -->
+    <div class="layout-page">
+        <!-- Navbar -->
+        {% block navbar %}
+            {% include 'app/navbar.html' %}
+        {% endblock %}
+        <!-- / Navbar -->
+
+        <!-- Content wrapper -->
+        <div class="content-wrapper">
+            <!-- Content -->
+
+            <div class="container-xxl flex-grow-1 container-p-y">
+                <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Table /</span> Composition report</h4>
+
+                <!-- Striped Rows -->
+                <div class="card">
+                    <div class="table-responsive text-nowrap">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>City</th>
+                                <th>Object name</th>
+                                <th>Average volume</th>
+                                <th>Volume</th>
+                                <th>Update at</th>
+{#                                <th>Actions</th>#}
+                            </tr>
+                            </thead>
+                            <tbody class="table-border-bottom-0">
+
+                            {% for consumption in consumptions %}
+                                <tr>
+                                    <td><i class="fab fa-angular fa-lg text-danger me-3"></i>
+                                        <strong>{{ consumption.device_info.code }}</strong>
+                                    </td>
+                                    <td>{{ consumption.device_info.district.city.name_uz }}</td>
+                                    <td>{{ consumption.device_info.district.name_uz }}</td>
+                                    <td>{{ consumption.average_volume }}</td>
+                                    <td>{{ consumption.volume }}</td>
+                                    <td>{{ consumption.updated_at|date:'Y-m-d' }} {{ consumption.updated_at|time:'H:i' }}</td>
+                                </tr>
+                            {% endfor %}
+
+
+{#                            <tr>#}
+                            {#                                <td><i class="fab fa-angular fa-lg text-danger me-3"></i>#}
+                            {#                                    <strong>stu246g2y</strong>#}
+                            {#                                </td>#}
+                            {#                                <td>Бухоро</td>#}
+                            {#                                <td>Окшик 2-аг</td>#}
+                            {#                                <td><i>123.123</i></td>#}
+                            {#                                <td><code>321.321</code></td>#}
+                            {#                                <td>2023-05-25 17:15</td>#}
+                            {#                                <td>#}
+                            {#                                    <div class="dropdown">#}
+                            {#                                        <button type="button" class="btn p-0 dropdown-toggle hide-arrow"#}
+                            {#                                                data-bs-toggle="dropdown">#}
+                            {#                                            <i class="bx bx-dots-vertical-rounded"></i>#}
+                            {#                                        </button>#}
+                            {#                                        <div class="dropdown-menu">#}
+                            {#                                            <a class="dropdown-item" href="javascript:void(0);"#}
+                            {#                                            ><i class="bx bx-edit-alt me-1"></i> Edit</a#}
+                            {#                                            >#}
+                            {#                                            <a class="dropdown-item" href="javascript:void(0);"#}
+                            {#                                            ><i class="bx bx-trash me-1"></i> Delete</a#}
+                            {#                                            >#}
+                            {#                                        </div>#}
+                            {#                                    </div>#}
+                            {#                                </td>#}
+                            {#                            </tr>#}
+                            {#                            <tr>#}
+                            {#                                <td><i class="fab fa-angular fa-lg text-danger me-3"></i>#}
+                            {#                                    <strong>5vwzu2jwd</strong>#}
+                            {#                                </td>#}
+                            {#                                <td>Бухоро</td>#}
+                            {#                                <td>Окшик 3-аг</td>#}
+                            {#                                <td><i>123.123</i></td>#}
+                            {#                                <td><code>321.321</code></td>#}
+                            {#                                <td>2023-05-25 17:15</td>#}
+                            {#                                <td>#}
+                            {#                                    <div class="dropdown">#}
+                            {#                                        <button type="button" class="btn p-0 dropdown-toggle hide-arrow"#}
+                            {#                                                data-bs-toggle="dropdown">#}
+                            {#                                            <i class="bx bx-dots-vertical-rounded"></i>#}
+                            {#                                        </button>#}
+                            {#                                        <div class="dropdown-menu">#}
+                            {#                                            <a class="dropdown-item" href="javascript:void(0);"#}
+                            {#                                            ><i class="bx bx-edit-alt me-1"></i> Edit</a#}
+                            {#                                            >#}
+                            {#                                            <a class="dropdown-item" href="javascript:void(0);"#}
+                            {#                                            ><i class="bx bx-trash me-1"></i> Delete</a#}
+                            {#                                            >#}
+                            {#                                        </div>#}
+                            {#                                    </div>#}
+                            {#                                </td>#}
+                            {#                            </tr>#}
+                            {#                            </tr>#}
+                            {#                            <tr>#}
+                            {#                                <td><i class="fab fa-angular fa-lg text-danger me-3"></i>#}
+                            {#                                    <strong>y60n8c7pk</strong>#}
+                            {#                                </td>#}
+                            {#                                <td>Бухоро</td>#}
+                            {#                                <td>Окшик 3-аг</td>#}
+                            {#                                <td><i>123.123</i></td>#}
+                            {#                                <td><code>321.321</code></td>#}
+                            {#                                <td>2023-05-25 17:15</td>#}
+                            {#                                <td>#}
+                            {#                                    <div class="dropdown">#}
+                            {#                                        <button type="button" class="btn p-0 dropdown-toggle hide-arrow"#}
+                            {#                                                data-bs-toggle="dropdown">#}
+                            {#                                            <i class="bx bx-dots-vertical-rounded"></i>#}
+                            {#                                        </button>#}
+                            {#                                        <div class="dropdown-menu">#}
+                            {#                                            <a class="dropdown-item" href="javascript:void(0);"#}
+                            {#                                            ><i class="bx bx-edit-alt me-1"></i> Edit</a#}
+                            {#                                            >#}
+                            {#                                            <a class="dropdown-item" href="javascript:void(0);"#}
+                            {#                                            ><i class="bx bx-trash me-1"></i> Delete</a#}
+                            {#                                            >#}
+                            {#                                        </div>#}
+                            {#                                    </div>#}
+                            {#                                </td>#}
+                            {#                            </tr>#}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!--/ Striped Rows -->
+
+            </div>
+            <!-- / Content -->
+
+            <!-- Footer -->
+            {% block footer %}
+                {% include 'app/footer.html' %}
+            {% endblock %}
+            <!-- / Footer -->
+
+            <div class="content-backdrop fade"></div>
+        </div>
+        <!-- Content wrapper -->
+    </div>
+    <!-- / Layout page -->
+{% endblock %}
