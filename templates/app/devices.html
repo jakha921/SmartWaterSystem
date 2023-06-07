@@ -37,6 +37,7 @@
                                 <th># model</th>
                                 <th># device</th>
                                 <th># Year</th>
+                                <th># IMEI</th>
                                 <th>Actions</th>
                             </tr>
                             </thead>
@@ -53,6 +54,7 @@
                                     <td>{{ device.modem_number }}</td>
                                     <td>{{ device.device_number }}</td>
                                     <td>{{ device.verified_at|date:'Y-m-d' }} {{ device.verified_at|time:'H:i' }}</td>
+                                    <td>{{ device.IMEI }}</td>
                                     <td>
                                         <div class="dropdown">
                                             <button type="button" class="btn p-0 dropdown-toggle hide-arrow"
@@ -60,7 +62,7 @@
                                                 <i class="bx bx-dots-vertical-rounded"></i>
                                             </button>
                                             <div class="dropdown-menu">
-                                                <a class="dropdown-item" href="{% url 'device_edit' device.pk %}"
+                                                <a class="dropdown-item" href="{% url 'app:device_edit' device.pk %}"
                                                 ><i class="bx bx-edit-alt me-1"></i> Edit</a>
                                                 <a class="dropdown-item" href="javascript:void(0);"
                                                 ><i class="bx bx-trash me-1"></i> Delete</a>
@@ -70,91 +72,6 @@
                                 </tr>
                             {% endfor %}
 
-                            {#                            <tr>#}
-                            {#                                <td><i class="fab fa-angular fa-lg text-danger me-3"></i>#}
-                            {#                                    <strong>whoi3hyld</strong></td>#}
-                            {#                                <td>Шават - 1 2 -аг</td>#}
-                            {#                                <td>Навоий, Хатирчи</td>#}
-                            {#                                <td>Қуйи Зарафшон ИТҲБ ҳузуридаги НСЭБ</td>#}
-                            {#                                <td>123.123, 453.615</td>#}
-                            {#                                <td>+998912345678</td>#}
-                            {#                                <td>AS4815</td>#}
-                            {#                                <td>BF48156</td>#}
-                            {#                                <td>2013-02-01</td>#}
-                            {#                                <td>#}
-                            {#                                    <div class="dropdown">#}
-                            {#                                        <button type="button" class="btn p-0 dropdown-toggle hide-arrow"#}
-                            {#                                                data-bs-toggle="dropdown">#}
-                            {#                                            <i class="bx bx-dots-vertical-rounded"></i>#}
-                            {#                                        </button>#}
-                            {#                                        <div class="dropdown-menu">#}
-                            {#                                            <a class="dropdown-item" href="javascript:void(0);"#}
-                            {#                                            ><i class="bx bx-edit-alt me-1"></i> Edit</a#}
-                            {#                                            >#}
-                            {#                                            <a class="dropdown-item" href="javascript:void(0);"#}
-                            {#                                            ><i class="bx bx-trash me-1"></i> Delete</a#}
-                            {#                                            >#}
-                            {#                                        </div>#}
-                            {#                                    </div>#}
-                            {#                                </td>#}
-                            {#                            </tr>#}
-                            {#                            <tr>#}
-                            {#                                <td><i class="fab fa-angular fa-lg text-danger me-3"></i>#}
-                            {#                                    <strong>xd0g6sgt</strong></td>#}
-                            {#                                <td>Шават - 1 2 -аг</td>#}
-                            {#                                <td>Навоий, Хатирчи</td>#}
-                            {#                                <td>Қуйи Зарафшон ИТҲБ ҳузуридаги НСЭБ</td>#}
-                            {#                                <td>123.123, 453.615</td>#}
-                            {#                                <td>+998912345678</td>#}
-                            {#                                <td>AS4815</td>#}
-                            {#                                <td>BF48156</td>#}
-                            {#                                <td>2013-02-01</td>#}
-                            {#                                <td>#}
-                            {#                                    <div class="dropdown">#}
-                            {#                                        <button type="button" class="btn p-0 dropdown-toggle hide-arrow"#}
-                            {#                                                data-bs-toggle="dropdown">#}
-                            {#                                            <i class="bx bx-dots-vertical-rounded"></i>#}
-                            {#                                        </button>#}
-                            {#                                        <div class="dropdown-menu">#}
-                            {#                                            <a class="dropdown-item" href="javascript:void(0);"#}
-                            {#                                            ><i class="bx bx-edit-alt me-1"></i> Edit</a#}
-                            {#                                            >#}
-                            {#                                            <a class="dropdown-item" href="javascript:void(0);"#}
-                            {#                                            ><i class="bx bx-trash me-1"></i> Delete</a#}
-                            {#                                            >#}
-                            {#                                        </div>#}
-                            {#                                    </div>#}
-                            {#                                </td>#}
-                            {#                            </tr>#}
-                            {#                            <tr>#}
-                            {#                                <td><i class="fab fa-angular fa-lg text-danger me-3"></i>#}
-                            {#                                    <strong>v1fmcqcos</strong></td>#}
-                            {#                                <td>Шават - 1 2 -аг</td>#}
-                            {#                                <td>Навоий, Хатирчи</td>#}
-                            {#                                <td>Қуйи Зарафшон ИТҲБ ҳузуридаги НСЭБ</td>#}
-                            {#                                <td>123.123, 453.615</td>#}
-                            {#                                <td>+998912345678</td>#}
-                            {#                                <td>AS4815</td>#}
-                            {#                                <td>BF48156</td>#}
-                            {#                                <td>2013-02-01</td>#}
-                            {#                                <td>#}
-                            {#                                    <div class="dropdown">#}
-                            {#                                        <button type="button" class="btn p-0 dropdown-toggle hide-arrow"#}
-                            {#                                                data-bs-toggle="dropdown">#}
-                            {#                                            <i class="bx bx-dots-vertical-rounded"></i>#}
-                            {#                                        </button>#}
-                            {#                                        <div class="dropdown-menu">#}
-                            {#                                            <a class="dropdown-item" href="javascript:void(0);"#}
-                            {#                                            ><i class="bx bx-edit-alt me-1"></i> Edit</a#}
-                            {#                                            >#}
-                            {#                                            <a class="dropdown-item" href="javascript:void(0);"#}
-                            {#                                            ><i class="bx bx-trash me-1"></i> Delete</a#}
-                            {#                                            >#}
-                            {#                                        </div>#}
-                            {#                                    </div>#}
-                            {#                                </td>#}
-                            {#                                </td>#}
-                            {#                            </tr>#}
                             </tbody>
                         </table>
                     </div>

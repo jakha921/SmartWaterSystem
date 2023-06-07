@@ -15,8 +15,8 @@ from django.contrib.auth.models import User
 from django.views import View
 from django.views.generic import ListView, FormView
 
-from app.forms import DeviceInfoForm, LoginForm
-from app.models import Consumption, DeviceInfo
+from app.forms import DeviceInfoForm
+from app.models import Consumption, DeviceInfo, District
 
 
 # Create your views here.
@@ -36,22 +36,26 @@ def write_db(request):
     than create new consumption with device info id
 
     """
-    pattern = r'"code":\s*"(?P<code>[^"]+)"[^}]+?"total_pos":\s*(?P<total_pos>[^,]+),\s*"total_neg":\s*(?P<total_neg>[^,]+),\s*"vaqt":\s*"(?P<vaqt>[^"]+)"'
+    if request.method == 'POST':
+        pattern = r'"code":\s*"(?P<code>[^"]+)"[^}]+?"total_pos":\s*(?P<total_pos>[^,]+),\s*"total_neg":\s*(?P<total_neg>[^,]+),\s*"vaqt":\s*"(?P<vaqt>[^"]+)"'
 
-    get_data = request.body.decode("utf-8")
-    match = (re.search(pattern, get_data)).groupdict()
-    if request.method == 'POST' and match:
-        device_info = DeviceInfo.objects.filter(code=match['code']).first()
-        print(device_info)
-        if device_info is None:
-            device_info = DeviceInfo.objects.create(code=match['code'])
-        date_obj = datetime.strptime(match['vaqt'].replace(' ', ''), '%d%m%Y%H:%M:%S')
-        match['vaqt'] = date_obj.strftime("%Y-%m-%d %H:%M:%S")
-        Consumption.objects.create(device_info=device_info, average_volume=match['total_pos'],
-                                   volume=match['total_neg'], device_update_at=match['vaqt'])
-        return JsonResponse({'status': 'ok'})
-    else:
-        return HttpResponseBadRequest()
+        get_data = request.body.decode("utf-8")
+        match = (re.search(pattern, get_data)).groupdict()
+        if match:
+            device_info = DeviceInfo.objects.filter(code=match['code']).first()
+            print(device_info)
+            if device_info is None:
+                device_info = DeviceInfo.objects.create(code=match['code'])
+            date_obj = datetime.strptime(match['vaqt'].replace(' ', ''), '%d%m%Y%H:%M:%S')
+            match['vaqt'] = date_obj.strftime("%Y-%m-%d %H:%M:%S")
+            Consumption.objects.create(device_info=device_info, average_volume=match['total_pos'],
+                                       volume=match['total_neg'], device_update_at=match['vaqt'])
+            return JsonResponse({'status': 'ok'})
+        else:
+            return HttpResponseBadRequest()
+
+    if request.method == 'GET':
+        return redirect('app:tables')
 
 
 def main(request):
@@ -66,64 +70,52 @@ def index(request):
     return render(request, 'app/index.html')
 
 
-class Login(View):
-    def get(self, request):
-        form = LoginForm()
-        return render(request, 'app/auth-login-basic.html', {'form': form})
-
-    def post(self, request):
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            # Perform authentication or other necessary actions
-            email_username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-            # Perform authentication logic here
-
-            user = authenticate(username=email_username, password=password)
-            if user is not None:
-                # A backend authenticated the credentials
-                return redirect('tables')
-            else:
-                form.add_error(None, 'Invalid username or password')
-                return render(request, 'app/auth-login-basic.html', {'form': form})
-        else:
-            return render(request, 'app/auth-login-basic.html', {'form': form})
+#
+# def login(request):
+#     return render(request, 'app/auth-login-basic.html', {'form': form})
+#
+#
+# def register(request):
+#     return render(request, 'app/auth-register.html')
+#
+#
+# def forgot_password(request):
+#     return render(request, 'app/auth-forgot-password-basic.html')
 
 
-def register(request):
-    return render(request, 'app/auth-register.html')
-
-
-def forgot_password(request):
-    return render(request, 'app/auth-forgot-password-basic.html')
-
-
-class TablesView( ListView):  # LoginRequiredMixin
+class TablesView(LoginRequiredMixin, ListView):
     template_name = 'app/tables-basic.html'
-    # login_url = '/login/'
-    # redirect_field_name = '/tables/'
+    login_url = '/auth/login/'
     context_object_name = 'consumptions'
+
     # paginate_by = 3
 
     def get_queryset(self):
+
         subquery = Consumption.objects.filter(device_info_id=OuterRef('device_info_id')).order_by('-updated_at')
-        queryset = Consumption.objects.filter(id=Subquery(subquery.values('id')[:1])).order_by('-updated_at')
+        if self.request.user.city_id:
+            # get ids of all discricts where city id is self.request.user.city_id
+            district_id_list = District.objects.filter(city_id=self.request.user.city_id).values_list('id', flat=True)
+
+            queryset = Consumption.objects.filter(
+                id=Subquery(subquery.values('id')[:1]),
+                device_info__district_id__in=district_id_list.values_list('id', flat=True)
+            ).order_by('-updated_at')
+        else:
+            queryset = Consumption.objects.filter(id=Subquery(subquery.values('id')[:1])).order_by('-updated_at')
         return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Tables'
+        context['title'] = 'Table'
         context['active_page'] = 'tables'
         return context
 
 
-class DevicesView(FormView):  # LoginRequiredMixin
+class DevicesView(LoginRequiredMixin, FormView):
     template_name = 'app/devices.html'
     form_class = DeviceInfoForm
     success_url = '/devices/'
-
-    # login_url = '/login/'
-    # redirect_field_name = 'devices'
 
     def form_valid(self, form):
         form.save()
@@ -145,7 +137,7 @@ class UserListView(ListView):
     model = User
     template_name = 'app/users.html'
     context_object_name = 'users'
-    paginate_by = 10
+    # paginate_by = 10
     ordering = ['-id']
     extra_context = {'title': 'Users'}
 
@@ -153,3 +145,7 @@ class UserListView(ListView):
         context = super().get_context_data(**kwargs)
         context['active_page'] = 'users'
         return context
+
+
+def pagination(request):
+    return render(request, 'app/ui-pagination-breadcrumbs.html')

@@ -36,10 +36,24 @@ class ConsumptionViewSet(mixins.ListModelMixin,
     queryset = Consumption.objects.all().order_by('-updated_at')
     serializer_class = ConsumptionSerializer
     authentication_classes = (TokenAuthentication,)
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_from_token_user_id(self):
+        """
+        from given token get user_id
+        :return: user_id
+        """
+        token = self.request.headers.get('Authorization', None)
+        if token:
+            token = token.split(' ')[1]
+            print('token', token)
+            return {'status': 'success'}
+        return None
 
     def get_queryset(self):
         try:
+            user_id = self.get_from_token_user_id()
+            print('user_id', user_id)
             # Get the URL parameters
             start_date_time = self.kwargs.get('start_date_time', None)
             end_date_time = self.kwargs.get('end_date_time', None)
@@ -77,7 +91,7 @@ class DeviceInfoViewSet(viewsets.ModelViewSet):
     queryset = DeviceInfo.objects.all().order_by('-updated_at')
     serializer_class = DeviceInfoSerializer
     authentication_classes = (TokenAuthentication,)
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
 
 class CityViewSet(viewsets.ModelViewSet):

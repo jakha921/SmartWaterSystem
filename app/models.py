@@ -56,6 +56,7 @@ class DeviceInfo(models.Model):
     longitude = models.FloatField(null=True)
     sim = models.CharField(max_length=255, null=True)
     verified_at = models.DateTimeField(null=True)
+    IMEI = models.CharField(max_length=255, null=True)
     modem_number = models.CharField(max_length=255, null=True)
     device_number = models.CharField(max_length=255, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
