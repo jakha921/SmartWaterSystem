@@ -68,8 +68,8 @@
                                         <td>{{ consumption.device_info.sim }}</td>
                                     {% endif %}
 
-                                    <td>{{ consumption.average_volume }}</td>
-                                    <td>{{ consumption.volume }}</td>
+                                    <td>{{ consumption.average_volume }} m³/s</td>
+                                    <td>{{ consumption.volume }} m³</td>
                                     <td>{{ consumption.updated_at|date:'Y-m-d' }} {{ consumption.updated_at|time:'H:i' }}</td>
                                 </tr>
                             {% endfor %}
