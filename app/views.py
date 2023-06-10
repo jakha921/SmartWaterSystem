@@ -70,19 +70,6 @@ def index(request):
     return render(request, 'app/index.html')
 
 
-#
-# def login(request):
-#     return render(request, 'app/auth-login-basic.html', {'form': form})
-#
-#
-# def register(request):
-#     return render(request, 'app/auth-register.html')
-#
-#
-# def forgot_password(request):
-#     return render(request, 'app/auth-forgot-password-basic.html')
-
-
 class TablesView(LoginRequiredMixin, ListView):
     template_name = 'app/tables-basic.html'
     login_url = '/auth/login/'
@@ -96,14 +83,16 @@ class TablesView(LoginRequiredMixin, ListView):
         if self.request.user.city_id:
             # get ids of all discricts where city id is self.request.user.city_id
             district_id_list = District.objects.filter(city_id=self.request.user.city_id).values_list('id', flat=True)
+            # order by city name_ru
 
             queryset = Consumption.objects.filter(
                 id=Subquery(subquery.values('id')[:1]),
                 device_info__district_id__in=district_id_list.values_list('id', flat=True)
-            ).order_by('-updated_at')
+            ).order_by('-device_info__district__name_ru')
         else:
-            queryset = Consumption.objects.filter(id=Subquery(subquery.values('id')[:1])).order_by('-updated_at')
-        return queryset
+            queryset = Consumption.objects.filter(id=Subquery(subquery.values('id')[:1])).order_by('-device_info__district__city__name_ru')
+        numbered_queryset = enumerate(queryset, 1)
+        return numbered_queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -23,3 +23,6 @@ urlpatterns = [
     path('api/', include('api.urls')),
     path('auth/', include('auth.urls')),
 ]
+
+admin.site.site_header = 'Smart Water System Administration'
+admin.site.site_title = 'Smart Water System'

@@ -18,3 +18,4 @@ urlpatterns = [
     path('pagination/', views.pagination, name='pagination'),
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+

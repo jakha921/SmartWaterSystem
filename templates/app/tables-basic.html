@@ -28,24 +28,46 @@
                         <table class="table table-striped">
                             <thead>
                             <tr>
-                                <th>Code</th>
-                                <th>City</th>
+                                {#                                if auth user city id is none#}
+                                {% if user.city_id != None %}
+                                    <th>№</th>
+                                {% else %}
+                                    <th>Code</th>
+                                {% endif %}
                                 <th>Object name</th>
+                                {% if user.username == 'admin' %}
+                                    <th>City</th>
+                                {% endif %}
+                                <th>District</th>
+                                {% if user.username != 'admin' %}
+                                    <th>Sim</th>
+                                {% endif %}
                                 <th>Average volume</th>
                                 <th>Volume</th>
                                 <th>Update at</th>
-{#                                <th>Actions</th>#}
+                                {#                                <th>Actions</th>#}
                             </tr>
                             </thead>
                             <tbody class="table-border-bottom-0">
 
-                            {% for consumption in consumptions %}
+                            {% for index, consumption in consumptions %}
                                 <tr>
-                                    <td><i class="fab fa-angular fa-lg text-danger me-3"></i>
-                                        <strong>{{ consumption.device_info.code }}</strong>
-                                    </td>
-                                    <td>{{ consumption.device_info.district.city.name_uz }}</td>
+                                    {% if user.username == 'admin' %}
+                                        <td><i class="fab fa-angular fa-lg text-danger me-3"></i>
+                                            <strong>{{ consumption.device_info.code }}</strong>
+                                        </td>
+                                    {% else %}
+                                        <td>{{ index }}</td>
+                                    {% endif %}
+                                    <td>{{ consumption.device_info.object_name }}</td>
+                                    {% if user.username == 'admin' %}
+                                        <td>{{ consumption.device_info.district.city.name_uz }}</td>
+                                    {% endif %}
                                     <td>{{ consumption.device_info.district.name_uz }}</td>
+                                    {% if user.username != 'admin' %}
+                                        <td>{{ consumption.device_info.sim }}</td>
+                                    {% endif %}
+
                                     <td>{{ consumption.average_volume }}</td>
                                     <td>{{ consumption.volume }}</td>
                                     <td>{{ consumption.updated_at|date:'Y-m-d' }} {{ consumption.updated_at|time:'H:i' }}</td>
@@ -53,7 +75,7 @@
                             {% endfor %}
 
 
-{#                            <tr>#}
+                            {#                            <tr>#}
                             {#                                <td><i class="fab fa-angular fa-lg text-danger me-3"></i>#}
                             {#                                    <strong>stu246g2y</strong>#}
                             {#                                </td>#}
