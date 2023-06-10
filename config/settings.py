@@ -40,7 +40,6 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'drf_yasg',
-    'corsheaders',
 
     'app'
 ]
@@ -57,7 +56,6 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -90,7 +88,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-if DEBUG == False:
+if DEBUG == True:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -178,10 +176,3 @@ SIMPLE_JWT = {
 AUTH_USER_MODEL = "app.User"
 
 LOGIN_REDIRECT_URL = '/'
-
-CORS_ALLOW_ALL_ORIGINS = True
-
-CSRF_TRUSTED_ORIGINS = [
- 'https://smartsystem.uz',
-]
-

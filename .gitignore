@@ -2,11 +2,3 @@
 .env
 db_filler.py
 db.sqlite3
-__pycache__
-api/__pycache__
-api/migrations/__pycache__
-app/__pycache__
-app/migrations/__pycache__
-auth/__pycache__
-auth/migrations/__pycache__
-config/__pycache__
