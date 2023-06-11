@@ -88,7 +88,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-if DEBUG == True:
+if DEBUG == False:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -176,3 +176,7 @@ SIMPLE_JWT = {
 AUTH_USER_MODEL = "app.User"
 
 LOGIN_REDIRECT_URL = '/'
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://smartsystem.uz',
+]
