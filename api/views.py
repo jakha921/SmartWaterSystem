@@ -1,25 +1,16 @@
 from datetime import datetime
 
+import jwt
 from django.db.models import OuterRef, Subquery
 from django.utils import timezone
 from rest_framework import viewsets, mixins
 from rest_framework import permissions
 from rest_framework.authentication import TokenAuthentication
 
-from api.serializers import UserSerializer, ConsumptionSerializer, DeviceInfoSerializer, \
-    CitySerializer
+from api.serializers import ConsumptionSerializer, DeviceInfoSerializer
 from app import models
 from app.models import Consumption, DeviceInfo, City, District, User
-
-
-class UserViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
-    queryset = User.objects.all().order_by('-date_joined')
-    serializer_class = UserSerializer
-    authentication_classes = (TokenAuthentication,)
-    # permission_classes = [permissions.IsAuthenticated]
+from config.settings import SECRET_KEY
 
 
 class ConsumptionViewSet(mixins.ListModelMixin,
@@ -34,30 +25,43 @@ class ConsumptionViewSet(mixins.ListModelMixin,
 
     """
     queryset = Consumption.objects.all().order_by('-updated_at')
+    # authentication_classes = (TokenAuthentication,)
     serializer_class = ConsumptionSerializer
-    authentication_classes = (TokenAuthentication,)
     permission_classes = [permissions.IsAuthenticated]
 
     def get_from_token_user_id(self):
         """
-        from given token get user_id
-        :return: user_id
+        Get user ID from the given token.
+        :return: user_id or None if token is invalid or not provided
         """
         token = self.request.headers.get('Authorization', None)
         if token:
-            token = token.split(' ')[1]
-            print('token', token)
-            return {'status': 'success'}
+            try:
+                # Remove the "Bearer " prefix from the token string
+                token = token.split(' ')[1]
+                decoded_token = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
+                user_id = decoded_token.get('user_id')
+                return user_id
+            except (jwt.DecodeError, jwt.InvalidTokenError):
+                pass
         return None
 
     def get_queryset(self):
         try:
             user_id = self.get_from_token_user_id()
-            print('user_id', user_id)
+            city_id = None
+            if user_id:
+                user = User.objects.only('city_id').get(pk=user_id)
+                city_id = user.city_id
+
             # Get the URL parameters
-            start_date_time = self.kwargs.get('start_date_time', None)
-            end_date_time = self.kwargs.get('end_date_time', None)
+            start_date_time = self.kwargs.get('start_date', None)
+            end_date_time = self.kwargs.get('end_date', None)
             device_id = self.kwargs.get('device_id', None)
+
+            print('start_date_time', start_date_time)
+            print('end_date_time', end_date_time)
+            print('device_id', device_id)
 
             # Convert URL parameters to aware datetime objects and set time to min or max
             start_date_time = datetime.combine(datetime.strptime(start_date_time, '%Y-%m-%d'), datetime.min.time()) \
@@ -65,23 +69,39 @@ class ConsumptionViewSet(mixins.ListModelMixin,
             end_date_time = datetime.combine(datetime.strptime(end_date_time, '%Y-%m-%d'), datetime.max.time()) \
                 if end_date_time else None
 
-            # Check if all parameters are present
+            # Get the base queryset
+            queryset = Consumption.objects.all().order_by('-updated_at')
+
             if start_date_time and end_date_time and device_id:
                 start_date_time = timezone.make_aware(start_date_time)
                 end_date_time = timezone.make_aware(end_date_time)
 
-                queryset = Consumption.objects.filter(
+                # Filter the queryset based on the parameters
+                queryset = queryset.filter(
                     device_info_id=device_id,
                     updated_at__range=(start_date_time, end_date_time)
-                ).order_by('-updated_at').all()
+                )
 
-            else:
-                # Get last item of each device by updated_at field (latest) and return queryset with this items only without distinct
+            elif not (start_date_time and end_date_time and device_id):
+                # Create a subquery to get the last item IDs of each device
                 subquery = Consumption.objects.filter(device_info_id=OuterRef('device_info_id')).order_by('-updated_at')
-                queryset = Consumption.objects.filter(id=Subquery(subquery.values('id')[:1])).order_by('-updated_at')
+                subquery = subquery.values('id')[:1]
+
+                if city_id:
+                    # Filter the base queryset based on the subquery results and city ID
+                    queryset = queryset.filter(
+                        id__in=Subquery(subquery),
+                        device_info__district_id__city_id=city_id
+                    ).order_by('-device_info__district__name_ru')
+                else:
+                    # Filter the base queryset based on the subquery results
+                    queryset = queryset.filter(id__in=Subquery(subquery))
+
             return queryset
+
         except Exception as e:
             print(e)
+            return []
 
 
 class DeviceInfoViewSet(viewsets.ModelViewSet):
@@ -92,13 +112,3 @@ class DeviceInfoViewSet(viewsets.ModelViewSet):
     serializer_class = DeviceInfoSerializer
     authentication_classes = (TokenAuthentication,)
     permission_classes = [permissions.IsAuthenticated]
-
-
-class CityViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows city to be viewed or edited.
-    """
-    queryset = City.objects.all().order_by('-updated_at')
-    serializer_class = CitySerializer
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = [permissions.AllowAny]
