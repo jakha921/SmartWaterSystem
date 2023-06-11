@@ -88,7 +88,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-if DEBUG == True:
+if DEBUG == False:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -160,17 +160,8 @@ STORAGES = {
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),  # time of updating
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-
-    'ALGORITHM': 'HS256',  # Encoding to HS256
-    'SIGNING_KEY': SECRET_KEY,  # Use as SIGNING_KEY(VERIFY-SIGNATURE)
-
-    'AUTH_HEADER_TYPES': ('Bearer',),  # # Authorization: Bearer {token}
-
-    'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
-    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
-    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),  # time of updating
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=5),
 }
 
 AUTH_USER_MODEL = "app.User"

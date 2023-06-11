@@ -4,12 +4,6 @@ from rest_framework import serializers
 from app.models import Consumption, DeviceInfo, City, District
 
 
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['id', 'username', 'email', 'groups']
-
-
 class ConsumptionSerializer(serializers.ModelSerializer):
     """
     Serializer for Consumption model from app.models
@@ -113,22 +107,3 @@ class DeviceInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = DeviceInfo
         fields = ['id', 'code', 'latitude', 'longitude', 'sim', 'district']
-
-
-class CitySerializer(serializers.ModelSerializer):
-    """
-    Serializer for City model from app.models
-
-    {
-        "id": 1,
-        "name_ru": "Алматы",
-        "name_uz": "Алматы",
-        "name_en": "Almaty"
-    }
-    """
-
-    class Meta:
-        model = City
-        fields = ['id', 'name_ru', 'name_uz', 'name_en']
-
-
