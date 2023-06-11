@@ -167,3 +167,7 @@ SIMPLE_JWT = {
 AUTH_USER_MODEL = "app.User"
 
 LOGIN_REDIRECT_URL = '/'
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://smartsystem.uz',
+]
