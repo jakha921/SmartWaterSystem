@@ -2,6 +2,9 @@
 .env
 db_filler.py
 db.sqlite3
+venv
+api/__pycache__
+config/__pycache__
 utils
 
 # Ignore all .pyc files
@@ -9,4 +12,5 @@ utils
 
 # Ignore all __pycache__ directories
 __pycache__/
+
 
