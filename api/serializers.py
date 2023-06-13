@@ -45,6 +45,7 @@ class ConsumptionSerializer(serializers.ModelSerializer):
             "latitude": obj.device_info.latitude,
             "longitude": obj.device_info.longitude,
             "sim": obj.device_info.sim,
+            "object_name": obj.device_info.object_name,
             "district": {
                 "id": obj.device_info.district.id,
                 "name_ru": obj.device_info.district.name_ru,
