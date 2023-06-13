@@ -3,3 +3,10 @@
 db_filler.py
 db.sqlite3
 utils
+
+# Ignore all .pyc files
+*.pyc
+
+# Ignore all __pycache__ directories
+__pycache__/
+
