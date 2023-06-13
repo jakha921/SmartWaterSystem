@@ -105,6 +105,7 @@ class DevicesView(LoginRequiredMixin, FormView):
     template_name = 'app/devices.html'
     form_class = DeviceInfoForm
     success_url = '/devices/'
+    login_url = '/auth/login/'
 
     def form_valid(self, form):
         form.save()
