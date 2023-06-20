@@ -70,7 +70,7 @@ class ConsumptionViewSet(mixins.ListModelMixin,
                 if end_date_time else None
 
             # Get the base queryset
-            queryset = Consumption.objects.all().order_by('-updated_at')
+            queryset = Consumption.objects.all().order_by('-device_info__district__city__name_ru')
 
             if start_date_time and end_date_time and device_id:
                 start_date_time = timezone.make_aware(start_date_time)

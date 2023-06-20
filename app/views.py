@@ -46,7 +46,13 @@ def write_db(request):
             print(device_info)
             if device_info is None:
                 device_info = DeviceInfo.objects.create(code=match['code'])
-            date_obj = datetime.strptime(match['vaqt'].replace(' ', ''), '%d%m%Y%H:%M:%S')
+
+            date_obj = datetime.utcnow()
+            try:
+                date_obj = datetime.strptime(match['vaqt'].replace(' ', ''), '%d%m%Y%H:%M:%S')
+            except:
+                pass
+
             match['vaqt'] = date_obj.strftime("%Y-%m-%d %H:%M:%S")
             Consumption.objects.create(device_info=device_info, average_volume=match['total_pos'],
                                        volume=match['total_neg'], device_update_at=match['vaqt'])
@@ -90,7 +96,8 @@ class TablesView(LoginRequiredMixin, ListView):
                 device_info__district_id__in=district_id_list.values_list('id', flat=True)
             ).order_by('-device_info__district__name_ru')
         else:
-            queryset = Consumption.objects.filter(id=Subquery(subquery.values('id')[:1])).order_by('-device_info__district__city__name_ru')
+            queryset = Consumption.objects.filter(id=Subquery(subquery.values('id')[:1])).order_by(
+                '-device_info__district__city__name_ru')
         numbered_queryset = enumerate(queryset, 1)
         return numbered_queryset
 
