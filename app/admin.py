@@ -36,7 +36,7 @@ class CityAdmin(admin.ModelAdmin):
 class DistrictAdmin(admin.ModelAdmin):
     list_display = ['name_ru', 'name_uz', 'name_en', 'city', 'created_at', 'updated_at']
     list_filter = ['name_ru']
-    list_per_page = 10
+    list_per_page = 20
     search_fields = ['name_ru', 'name_uz', 'name_en']
 
     # required fields for add new object
@@ -48,12 +48,11 @@ class DistrictAdmin(admin.ModelAdmin):
 
 @admin.register(models.DeviceInfo)
 class DeviceInfoAdmin(admin.ModelAdmin):
-    list_display = ['code', 'object_name', 'district', 'organization', 'latitude', 'longitude', 'sim', 'verified_at',
-                    'IMEI', 'modem_number', 'device_number', 'created_at', 'updated_at']
+    list_display = ['code', 'object_name', 'district', 'sim', 'latitude', 'longitude', 'IMEI']
     list_filter = ['code']
-    list_per_page = 15
-    search_fields = ['code', 'object_name', 'district', 'organization', 'latitude', 'longitude', 'sim', 'verified_at',
-                     'IMEI', 'modem_number', 'device_number']
+    list_per_page = 20
+    search_fields = ['code', 'object_name', 'organization', 'latitude', 'longitude', 'sim', 'verified_at',
+                     'IMEI', 'modem_number', 'device_number', 'district__name_ru']
 
     # # required fields for add new object
     fields = ['code', 'object_name', 'district', 'organization', ('latitude', 'longitude'), 'sim', 'verified_at',
@@ -65,10 +64,13 @@ class DeviceInfoAdmin(admin.ModelAdmin):
 
 @admin.register(models.Consumption)
 class ConsumptionAdmin(admin.ModelAdmin):
+    # order by device_update_at desc
+    ordering = ['-device_update_at']
     list_display = ['device_info', 'average_volume', 'volume', 'device_update_at']
     list_filter = ['device_info']
-    list_per_page = 15
-    search_fields = ['device_info', 'average_volume', 'volume']
+    list_per_page = 20
+    search_fields = ['device_info__code', 'average_volume', 'volume', 'device_info__district__name_ru',
+                     'device_info__district__city__name_ru']
 
     # required fields for add new object
     fields = ['device_info', 'average_volume', 'volume', 'device_update_at']

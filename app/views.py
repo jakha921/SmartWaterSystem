@@ -2,6 +2,7 @@ import re
 import json
 from datetime import datetime
 
+import pytz
 from django.http import JsonResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
 
@@ -29,7 +30,8 @@ def write_db(request):
     {
         "code": "CzO3dzSkJ4",
         "data":
-        {"total_pos": 2236168, "total_neg": -1412, "vaqt": "31052023 06:00:03"}
+        {"total_pos": 2236168, "total_neg": -1412, "vaqt": "31052023 06:00:03"} or
+        {"total_pos": 2236168, "total_neg": -1412, "vaqt": "20230625155108"}
     }
 
     than check device info code exist in database or not if not create new device info and get id
@@ -43,19 +45,22 @@ def write_db(request):
         match = (re.search(pattern, get_data)).groupdict()
         if match:
             device_info = DeviceInfo.objects.filter(code=match['code']).first()
-            print(device_info)
             if device_info is None:
                 device_info = DeviceInfo.objects.create(code=match['code'])
 
-            date_obj = datetime.utcnow()
             try:
-                date_obj = datetime.strptime(match['vaqt'].replace(' ', ''), '%d%m%Y%H:%M:%S')
+                match['vaqt'] = datetime.strptime(match['vaqt'], '%d%m%Y %H:%M:%S').strftime('%Y-%m-%d %H:%M:%S')
             except:
-                pass
+                match['vaqt'] = datetime.strptime(match['vaqt'], '%Y%m%d%H%M%S').strftime('%Y-%m-%d %H:%M:%S')
 
-            match['vaqt'] = date_obj.strftime("%Y-%m-%d %H:%M:%S")
+            timezone = pytz.timezone('Asia/Tashkent')
+            match['vaqt'] = timezone.localize(datetime.strptime(match['vaqt'], '%Y-%m-%d %H:%M:%S'))
+
+            print(device_info, match['vaqt'])
+
             Consumption.objects.create(device_info=device_info, average_volume=match['total_pos'],
                                        volume=match['total_neg'], device_update_at=match['vaqt'])
+
             return JsonResponse({'status': 'ok'})
         else:
             return HttpResponseBadRequest()
