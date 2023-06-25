@@ -1,5 +1,16 @@
 {% extends 'app/base.html' %}
+{% load static %}
+
+
+
+{% block head %}
+    <!-- Template customizer -->
+    <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
+    <link href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" rel="stylesheet">
+{% endblock %}
+
 {% block title %}{{ title }}{% endblock %}
+
 {% block content %}
     <!-- Menu -->
     {% block aside %}
@@ -20,16 +31,12 @@
         <!-- Content -->
 
         <div class="container-xxl flex-grow-1 container-p-y">
-            <div class="row">
-                <div class="col-lg-8 mb-4 order-0">
-                    <iframe height="auto" frameborder="0" scrolling="no" marginheight="0"
-                            marginwidth="0"
-                            src="https://www.openstreetmap.org/export/embed.html?bbox=50.03173828125001%2C36.65079252503471%2C73.49853515625001%2C46.31658418182218&amp;layer=mapnik"
-                            style="border: 1px solid black"></iframe>
-                    <br/><small><a href="https://www.openstreetmap.org/#map=6/41.665/61.765">Посмотреть более крупную
-                    карту</a></small>
-                </div>
+            <!-- Basic Bootstrap Table -->
+            <div class="card">
+                <div id="map" style="height: 80vh; width: 100%; border-radius: 8px;"></div>
             </div>
+
+
             <!-- / Content -->
 
             <!-- Footer -->
@@ -44,3 +51,54 @@
     </div>
     <!-- / Layout page -->
 {% endblock %}
+
+{% block script %}
+
+    <!--! Map Init -->
+    <script>
+        const map = L.map('map').setView([42.0, 64.0], 6);
+        // map.scrollWheelZoom.disable();
+
+
+        var mosqueIcon = L.icon({
+            {#iconUrl: './icons/pin.png',#}
+            iconUrl: '{% static 'icons/pin.png' %}',
+            iconSize: [32], // size of the icon
+            //  shadowUrl: 'leaf-shadow.png',
+
+            //shadowSize:   [50, 64], // size of the shadow
+            //iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+            //shadowAnchor: [4, 62],  // the same for the shadow
+            //popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+        });
+
+        {#L.tileLayer('https://{s}.basemaps.cartocdn.com/voyager_no_buildings/{z}/{x}/{y}.png', {#}
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}.png', {
+            maxZoom: 18
+        }).addTo(map);
+
+        {#L.marker([40.06500000, 65.92944444], {icon: mosqueIcon}).bindPopup('Имоми Аъзам масжиди').addTo(map);#}
+        {#L.marker([41.06500000, 64.92944444], { icon: mosqueIcon }).bindPopup('asdsadadas').addTo(map);#}
+        {% for device in devices %}
+            {% if device.latitude and device.longitude %}
+                L.marker([41.06500000, {{ device.longitude }}], {icon: mosqueIcon}).bindPopup(
+                    {#L.marker([{{ device.latitude }}, {{ device.longitude }}], {icon: mosqueIcon}).bindPopup(#}
+                    '<b>{{ device.code }}</b><br>' +
+                    '{{ device.district.city.name_ru }}({{ device.district.name_ru }})<br>' +
+                    '{{ device.object_name }}<br>' +
+                    '{{ device.sim }}<br>'
+                ).addTo(map);
+            {% endif %}
+        {% endfor %}
+
+
+        function onMapClick(e) {
+
+
+        }
+
+        map.on('click', onMapClick);
+
+    </script>
+{% endblock %}
+</div>

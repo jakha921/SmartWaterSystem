@@ -70,9 +70,17 @@ def write_db(request):
 
 
 def main(request):
+    # get all devices_info ids where device_info_id is in consumption table
+    subquery = Consumption.objects.filter(device_info_id=OuterRef('device_info_id')).order_by('-updated_at')
+    # get all consumption where id is in subquery
+    queryset = Consumption.objects.filter(id=Subquery(subquery.values('id')[:1])).order_by('-updated_at')
+    # get all device_info where id is in subquery
+    devices = DeviceInfo.objects.filter(id__in=queryset.values_list('device_info_id', flat=True))
+
     context = {
         'title': 'Main page',
         'active_page': 'main',
+        'devices': devices
     }
     return render(request, 'app/main.html', context)
 
