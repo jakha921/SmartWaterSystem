@@ -57,6 +57,11 @@ def write_db(request):
             match['vaqt'] = timezone.localize(datetime.strptime(match['vaqt'], '%Y-%m-%d %H:%M:%S'))
 
             print(device_info, match['vaqt'])
+            # set tatol_neg if tatol_neg < 0 set abs value
+            print(match['total_neg'])
+            print(type(match['total_neg']))
+            if int(match['total_neg']) < 0:
+                match['total_neg'] = abs(int(match['total_neg']))
 
             Consumption.objects.create(device_info=device_info, average_volume=match['total_pos'],
                                        volume=match['total_neg'], device_update_at=match['vaqt'])
