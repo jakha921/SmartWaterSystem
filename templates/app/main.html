@@ -80,7 +80,9 @@
         {#L.marker([40.06500000, 65.92944444], {icon: mosqueIcon}).bindPopup('Имоми Аъзам масжиди').addTo(map);#}
         {#L.marker([41.06500000, 64.92944444], { icon: mosqueIcon }).bindPopup('asdsadadas').addTo(map);#}
         {% for device in devices %}
-            {% if device.latitude and device.longitude %}
+            {% if device.latitude is not null and device.longitude is not null %}
+                console.log({{ device.latitude }})
+                console.log({{ device.longitude }})
                 L.marker([41.06500000, {{ device.longitude }}], {icon: mosqueIcon}).bindPopup(
                     {#L.marker([{{ device.latitude }}, {{ device.longitude }}], {icon: mosqueIcon}).bindPopup(#}
                     '<b>{{ device.code }}</b><br>' +
