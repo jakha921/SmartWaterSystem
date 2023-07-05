@@ -4,6 +4,7 @@ from datetime import datetime
 
 import pytz
 from django.http import JsonResponse, HttpResponseBadRequest
+from django.template.defaultfilters import lower
 from django.views.decorators.csrf import csrf_exempt
 
 from django.contrib.auth import authenticate
@@ -14,10 +15,10 @@ from django.shortcuts import render, redirect
 
 from django.contrib.auth.models import User
 from django.views import View
-from django.views.generic import ListView, FormView
+from django.views.generic import ListView, FormView, DetailView
 
 from app.forms import DeviceInfoForm
-from app.models import Consumption, DeviceInfo, District
+from app.models import Consumption, DeviceInfo, District, City
 
 
 # Create your views here.
@@ -143,6 +144,24 @@ class DevicesView(LoginRequiredMixin, FormView):
         context['active_page'] = 'devices'
         return context
 
+
+class ConsumptionView(LoginRequiredMixin, View):
+    template_name = 'app/consumptions-detail.html'
+    login_url = '/auth/login/'
+
+    def get(self, request, *args, **kwargs):
+        subquery = Consumption.objects.filter(device_info_id=OuterRef('device_info_id')).order_by('-updated_at')
+        queryset = Consumption.objects.filter(id=Subquery(subquery.values('id')[:1]),
+                                              device_info__district__city_id=self.kwargs['pk']).order_by(
+            '-device_info__district__name_ru')
+        print('queryset', queryset)
+        context = {
+            'title': 'Consumption',
+            'active_page': queryset.first().device_info.district.city.name_en,
+            'consumptions': queryset
+        }
+        print('consumption', context)
+        return render(request, self.template_name, context)
 
 def error(request):
     return render(request, 'app/pages-misc-error.html')

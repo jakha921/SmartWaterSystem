@@ -1,0 +1,10 @@
+{% for city in cities %}
+
+    <li class="menu-item {% if active_page == 'cities' %}active{% endif %}">
+        <a href="{% url 'app:cities' %}" class="menu-link">
+            <i class='menu-icon tf-icons bx bxs-map'></i>
+            <div data-i18n="Tables">{{ city.name_en }}</div>
+        </a>
+    </li>
+
+{% endfor %}

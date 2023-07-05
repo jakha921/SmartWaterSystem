@@ -16,6 +16,7 @@ urlpatterns = [
     path('users/', views.UserListView.as_view(), name='users'),
     path('error/', views.error, name='error'),
     path('pagination/', views.pagination, name='pagination'),
+    path('consumption/<int:pk>/', views.ConsumptionView.as_view(), name='consumptions-detail'),
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
