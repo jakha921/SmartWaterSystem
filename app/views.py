@@ -154,7 +154,9 @@ class ConsumptionView(LoginRequiredMixin, View):
         queryset = Consumption.objects.filter(id=Subquery(subquery.values('id')[:1]),
                                               device_info__district__city_id=self.kwargs['pk']).order_by(
             '-device_info__district__name_ru')
-        print('queryset', queryset)
+        if queryset.count() == 0:
+            return redirect('app:tables')
+
         context = {
             'title': 'Consumption',
             'active_page': queryset.first().device_info.district.city.name_en,
