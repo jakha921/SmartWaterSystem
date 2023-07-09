@@ -62,7 +62,7 @@ class ConsumptionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Consumption
-        fields = ['id', 'device', 'average_volume', 'volume', 'updated_at']
+        fields = ['id', 'device', 'average_volume', 'volume', 'updated_at', 'device_update_at']
 
 
 class DeviceInfoSerializer(serializers.ModelSerializer):

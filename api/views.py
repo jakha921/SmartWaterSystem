@@ -59,10 +59,6 @@ class ConsumptionViewSet(mixins.ListModelMixin,
             end_date_time = self.kwargs.get('end_date', None)
             device_id = self.kwargs.get('device_id', None)
 
-            print('start_date_time', start_date_time)
-            print('end_date_time', end_date_time)
-            print('device_id', device_id)
-
             # Convert URL parameters to aware datetime objects and set time to min or max
             start_date_time = datetime.combine(datetime.strptime(start_date_time, '%Y-%m-%d'), datetime.min.time()) \
                 if start_date_time else None
@@ -79,7 +75,7 @@ class ConsumptionViewSet(mixins.ListModelMixin,
                 # Filter the queryset based on the parameters
                 queryset = queryset.filter(
                     device_info_id=device_id,
-                    updated_at__range=(start_date_time, end_date_time)
+                    device_update_at__range=(start_date_time, end_date_time)
                 )
 
             elif not (start_date_time and end_date_time and device_id):
