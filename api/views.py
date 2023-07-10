@@ -49,7 +49,7 @@ class ConsumptionViewSet(mixins.ListModelMixin,
     def get_queryset(self):
         try:
             user_id = self.get_from_token_user_id()
-            city_id = None
+            city_id, is_admin = None, True if user_id == 1 else False
             if user_id:
                 user = User.objects.only('city_id').get(pk=user_id)
                 city_id = user.city_id
@@ -66,7 +66,9 @@ class ConsumptionViewSet(mixins.ListModelMixin,
                 if end_date_time else None
 
             # Get the base queryset
-            queryset = Consumption.objects.all().order_by('-device_info__district__city__name_ru')
+            queryset = Consumption.objects.all().order_by(
+                '-device_info__district__city__name_ru' if is_admin else '-device_info__district__name_ru'
+            )
 
             if start_date_time and end_date_time and device_id:
                 start_date_time = timezone.make_aware(start_date_time)
