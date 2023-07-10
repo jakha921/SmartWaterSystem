@@ -66,9 +66,14 @@ class ConsumptionViewSet(mixins.ListModelMixin,
                 if end_date_time else None
 
             # Get the base queryset
-            queryset = Consumption.objects.all().order_by(
-                '-device_info__district__city__name_ru' if is_admin else '-device_info__district__name_ru'
-            )
+            if is_admin:
+                queryset = Consumption.objects.all().order_by('-device_info__district__city__name_ru',
+                                                              '-device_info__district__name_ru',
+                                                              'device_info__object_name')
+            else:
+                queryset = Consumption.objects.all().order_by('-device_info__district__name_ru',
+                                                              '-device_info__district__city__name_ru',
+                                                              'device_info__object_name')
 
             if start_date_time and end_date_time and device_id:
                 start_date_time = timezone.make_aware(start_date_time)
@@ -82,7 +87,7 @@ class ConsumptionViewSet(mixins.ListModelMixin,
 
             elif not (start_date_time and end_date_time and device_id):
                 # Create a subquery to get the last item IDs of each device
-                subquery = Consumption.objects.filter(device_info_id=OuterRef('device_info_id')).order_by('-updated_at')
+                subquery = Consumption.objects.filter(device_info_id=OuterRef('device_info_id')).order_by('-device_update_at')
                 subquery = subquery.values('id')[:1]
 
                 if city_id:
@@ -90,7 +95,7 @@ class ConsumptionViewSet(mixins.ListModelMixin,
                     queryset = queryset.filter(
                         id__in=Subquery(subquery),
                         device_info__district_id__city_id=city_id
-                    ).order_by('-device_info__district__name_ru')
+                    ).order_by('-device_info__district__name_ru', '-device_info__district__city__name_ru', 'device_info__object_name')
                 else:
                     # Filter the base queryset based on the subquery results
                     queryset = queryset.filter(id__in=Subquery(subquery))

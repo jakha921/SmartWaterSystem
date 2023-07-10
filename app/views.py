@@ -113,10 +113,10 @@ class TablesView(LoginRequiredMixin, ListView):
             queryset = Consumption.objects.filter(
                 id=Subquery(subquery.values('id')[:1]),
                 device_info__district_id__in=district_id_list.values_list('id', flat=True)
-            ).order_by('-device_info__district__name_ru')
+            ).order_by('-device_info__district__name_ru', '-device_info__district__city__name_ru', 'device_info__object_name')
         else:
             queryset = Consumption.objects.filter(id=Subquery(subquery.values('id')[:1])).order_by(
-                '-device_info__district__city__name_ru')
+                '-device_info__district__city__name_ru', '-device_info__district__name_ru', 'device_info__object_name')
         numbered_queryset = enumerate(queryset, 1)
         return numbered_queryset
 
@@ -153,7 +153,7 @@ class ConsumptionView(LoginRequiredMixin, View):
         subquery = Consumption.objects.filter(device_info_id=OuterRef('device_info_id')).order_by('-updated_at')
         queryset = Consumption.objects.filter(id=Subquery(subquery.values('id')[:1]),
                                               device_info__district__city_id=self.kwargs['pk']).order_by(
-            '-device_info__district__name_ru')
+            '-device_info__district__name_ru', '-device_info__district__city__name_ru', 'device_info__object_name')
         if queryset.count() == 0:
             return redirect('app:tables')
 
@@ -162,7 +162,6 @@ class ConsumptionView(LoginRequiredMixin, View):
             'active_page': queryset.first().device_info.district.city.name_en,
             'consumptions': queryset
         }
-        print('consumption', context)
         return render(request, self.template_name, context)
 
 def error(request):
