@@ -20,7 +20,8 @@ admin.site.register(models.User, CustomUserAdmin)
 
 @admin.register(models.City)
 class CityAdmin(admin.ModelAdmin):
-    list_display = ['name_ru', 'name_uz', 'name_en', 'created_at', 'updated_at']
+    list_display = ['id', 'name_ru', 'name_uz', 'name_en', 'created_at', 'updated_at']
+    list_display_links = ['name_ru']
     list_filter = ['name_ru']
     list_per_page = 10
     search_fields = ['name_ru', 'name_uz', 'name_en']
@@ -34,7 +35,8 @@ class CityAdmin(admin.ModelAdmin):
 
 @admin.register(models.District)
 class DistrictAdmin(admin.ModelAdmin):
-    list_display = ['name_ru', 'name_uz', 'name_en', 'city', 'created_at', 'updated_at']
+    list_display = ['id', 'name_ru', 'name_uz', 'name_en', 'city', 'created_at', 'updated_at']
+    list_display_links = ['name_ru']
     list_filter = ['name_ru']
     list_per_page = 20
     search_fields = ['name_ru', 'name_uz', 'name_en']
@@ -48,7 +50,8 @@ class DistrictAdmin(admin.ModelAdmin):
 
 @admin.register(models.DeviceInfo)
 class DeviceInfoAdmin(admin.ModelAdmin):
-    list_display = ['code', 'object_name', 'district', 'sim', 'latitude', 'longitude', 'IMEI']
+    list_display = ['id', 'code', 'object_name', 'district', 'sim', 'latitude', 'longitude', 'IMEI']
+    list_display_links = ['code']
     list_filter = ['code']
     list_per_page = 20
     search_fields = ['code', 'object_name', 'organization', 'latitude', 'longitude', 'sim', 'verified_at',
