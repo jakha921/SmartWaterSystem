@@ -80,7 +80,7 @@
         <!-- /Dashboard -->
 
 
-        {% if user.is_superuser %}
+        {% if user.is_staff %}
             <!-- Location -->
             <li class="menu-item {% if active_page == 'main' %}active{% endif %}">
                 <a href="{% url 'app:main' %}" class="menu-link">
@@ -94,7 +94,7 @@
 
 
         <!-- Devices -->
-        {% if user.is_superuser %}
+        {% if user.is_staff %}
             <li class="menu-item {% if active_page == 'devices' %}active{% endif %}">
                 <a href="{% url 'app:devices' %}" class="menu-link">
                     <i class='menu-icon tf-icons bx bx-devices'></i>
@@ -105,7 +105,7 @@
         <!-- /Devices -->
 
         <!-- Cities -->
-        {% if user.is_superuser %}
+        {% if user.is_staff %}
             {#            create list of detail url for cities as Bukhara, Navoi, Samarkand, Sirdariyo и Surkhondare #}
             <li class="menu-item {% if active_page == 'Bukhara' %}active{% endif %}">
                 <a href="{% url 'app:consumptions-detail' '1' %}" class="menu-link">
