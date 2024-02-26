@@ -20,7 +20,7 @@
             <!-- Content -->
 
             <div class="container-xxl flex-grow-1 container-p-y">
-                <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Table /</span> Composition report</h4>
+                <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Жадвал /</span> Ҳисобот</h4>
 
                 <!-- Striped Rows -->
                 <div class="card">
@@ -32,19 +32,19 @@
                                 {% if user.city_id != None %}
                                     <th>№</th>
                                 {% else %}
-                                    <th>Code</th>
+                                    <th>Код</th>
                                 {% endif %}
-                                <th>Object name</th>
+                                <th>OБЪЕКТ НОМИ</th>
                                 {% if user.username == 'admin' %}
-                                    <th>City</th>
+                                    <th>ШАҲАР</th>
                                 {% endif %}
-                                <th>District</th>
+                                <th>ТУМАН</th>
                                 {% if user.username != 'admin' %}
                                     <th>Sim</th>
                                 {% endif %}
-                                <th>Average volume</th>
-                                <th>Volume</th>
-                                <th>Update at</th>
+                                <th>ЎРТАЧА ҲАЖМ</th>
+                                <th>ҲАЖМИ</th>
+                                <th>ЯНГИЛАНГАН ВАКТИ</th>
                                 {#                                <th>Actions</th>#}
                             </tr>
                             </thead>
