@@ -13,6 +13,7 @@ class CustomUserAdmin(UserAdmin):
     add_fieldsets = UserAdmin.add_fieldsets + (
         (None, {'fields': ('city',)}),
     )
+    list_filter = ['city__name_ru']
 
 
 admin.site.register(models.User, CustomUserAdmin)
@@ -22,7 +23,6 @@ admin.site.register(models.User, CustomUserAdmin)
 class CityAdmin(admin.ModelAdmin):
     list_display = ['id', 'name_ru', 'name_uz', 'name_en', 'created_at', 'updated_at']
     list_display_links = ['name_ru']
-    list_filter = ['name_ru']
     list_per_page = 10
     search_fields = ['name_ru', 'name_uz', 'name_en']
 
@@ -37,7 +37,7 @@ class CityAdmin(admin.ModelAdmin):
 class DistrictAdmin(admin.ModelAdmin):
     list_display = ['id', 'name_ru', 'name_uz', 'name_en', 'city', 'created_at', 'updated_at']
     list_display_links = ['name_ru']
-    list_filter = ['name_ru']
+    list_filter = ['city__name_ru']
     list_per_page = 20
     search_fields = ['name_ru', 'name_uz', 'name_en']
 
@@ -52,7 +52,7 @@ class DistrictAdmin(admin.ModelAdmin):
 class DeviceInfoAdmin(admin.ModelAdmin):
     list_display = ['id', 'code', 'object_name', 'district', 'sim', 'latitude', 'longitude', 'IMEI']
     list_display_links = ['code']
-    list_filter = ['code']
+    list_filter = ['district__city__name_ru', 'district__name_ru']
     list_per_page = 20
     search_fields = ['code', 'object_name', 'organization', 'latitude', 'longitude', 'sim', 'verified_at',
                      'IMEI', 'modem_number', 'device_number', 'district__name_ru']
@@ -70,7 +70,7 @@ class ConsumptionAdmin(admin.ModelAdmin):
     # order by device_update_at desc
     ordering = ['-device_update_at']
     list_display = ['device_info', 'average_volume', 'volume', 'device_update_at']
-    list_filter = ['device_info']
+    list_filter = ['device_info__district__city__name_ru', 'device_info__district__name_ru']
     list_per_page = 20
     search_fields = ['device_info__code', 'average_volume', 'volume', 'device_info__district__name_ru',
                      'device_info__district__city__name_ru']

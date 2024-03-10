@@ -617,8 +617,5 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-<<<<<<< Updated upstream
 content-hash = "113a299c36ba640dad1267169cbed41f726477db33bfd3b1449c6d4426801032"
-=======
-content-hash = "148d94e1f340f58d27fb8c57049fc394ef2bd54dd435b921c0ace98edac80622"
->>>>>>> Stashed changes
+
