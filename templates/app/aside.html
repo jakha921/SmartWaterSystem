@@ -148,6 +148,13 @@
                     <div data-i18n="Tables">Farg'ona</div>
                 </a>
             </li>
+            
+            <li class="menu-item {% if active_page == "	Qashqadariyo" %}active{% endif %}">
+                <a href="{% url 'app:consumptions-detail' '8' %}" class="menu-link">
+                    <i class='menu-icon tf-icons bx bx-map'></i>
+                    <div data-i18n="Tables">Qashqadariyo</div>
+                </a>
+            </li>
 
 
         {% endif %}
